@@ -4,7 +4,7 @@
 
 ## Summary
 
-How to configure multiple databases on individual domain names using a single Odoo instance? [View Full Article here](https://dev.to/thisishaykins/how-to-configure-multiple-databases-on-individual-domain-names-using-a-single-odoo-instance-3ppp)
+How to configure multiple databases on individual domain names using a single Odoo instance? [View Full Article here](https://dev.to/thisishaykins/how-to-configure-multiple-databases-on-individual-domain-names-using-a-single-odoo-instance-a-1mlg)
 
 Whether you’re a developer, startup founder, or building the next ERP-as-a-Service, this is your kick-off point. With this setup, you're running your own multi-tenant app on Odoo 18.
 
@@ -32,8 +32,10 @@ Whether you’re a developer, startup founder, or building the next ERP-as-a-Ser
 ```bash
 # Start services
 $ docker-compose up 
+
 # === OR ====
-$ docker-compose up --build
+
+$ docker-compose up -d
 ```
 
 ### > Visit the following link on your browser
@@ -69,3 +71,4 @@ $ odoo -d client-1 --init=base --stop-after-init
 ---
 
 Developed By: Akinshola Samuel AKINDE (<akinsholasamuel@gmail.com>)
+Drop your questions [here](https://github.com/thisishaykins/multi-tenant-odoo-app/issues/new/choose) or reachout and tag me on Twitter/X: @thisishaykins
