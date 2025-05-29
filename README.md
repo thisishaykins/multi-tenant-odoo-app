@@ -21,7 +21,13 @@ Whether you’re a developer, startup founder, or building the next ERP-as-a-Ser
 
 ## Project Setup
 
-### Startup the project using docker
+### > Add host entries on ``/etc/hosts`` (or Windows equivalent)
+
+```bash
+127.0.0.1 client-1.haykinsodoo.docker client-2.haykinsodoo.docker client-3.haykinsodoo.docker
+```
+
+### > Startup the project using docker
 
 ```bash
 # Start services
@@ -30,14 +36,14 @@ $ docker-compose up
 $ docker-compose up --build
 ```
 
-### Visit the following link on your browser
+### > Visit the following link on your browser
 
 - <http://client-1.haykinsodoo.docker/> **(note: ensure to copy the master password which will be re-used for all other clients installations)**
 - http://client-2.haykinsodoo.docker/
 - http://client-3.haykinsodoo.docker/
 
 
-### 🤖 Bonus: Manually Create DB
+### > 🤖 Bonus: Manually Create DB
 ```bash
 $ docker exec -it <odoo_container_id> /bin/bash
 
