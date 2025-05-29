@@ -1,0 +1,71 @@
+# version: "3.9"
+# Odoo with Traefik and PostgreSQL
+# This docker-compose file sets up Odoo with Traefik as a reverse proxy and PostgreSQL as the database.
+
+services:
+  db:
+    image: postgres:15
+    environment:
+      - POSTGRES_USER=${ODOO_DB_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - PGDATA=/var/lib/postgresql/data/pgdata
+    ports:
+      - 8432:5432
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    secrets:
+      - postgresql_password
+
+  odoo:
+    image: odoo:${ODOO_VERSION}
+    depends_on:
+      - db
+    environment:
+      - HOST=db
+      - USER=${ODOO_DB_USER}
+      - PASSWORD=${ODOO_DB_PASSWORD}
+    secrets:
+      - postgresql_password
+    ports:
+      - "8069:8069"
+      - "8072:8072"
+    volumes:
+      - odoo-data:/var/lib/odoo
+      - ./odoo.conf:/etc/odoo/odoo.conf
+      - ./addons:/mnt/extra-addons
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.odoo.rule=HostRegexp(`{subdomain:.+}.haykinsodoo.docker`)"
+      - "traefik.http.routers.odoo.entrypoints=web"
+      # - "traefik.http.routers.odoo.entrypoints=websecure"
+      # - "traefik.http.routers.odoo.tls=true"
+      # - "traefik.http.routers.odoo.tls.certresolver=letsencrypt"
+      - "traefik.http.services.odoo.loadbalancer.server.port=8069"
+
+  traefik:
+    image: traefik:v2.10
+    command:
+      - --api.insecure=true
+      - --providers.docker=true
+      # - --entrypoints.websecure.address=:443
+      - --entrypoints.web.address=:80
+      - --certificatesresolvers.letsencrypt.acme.httpchallenge=true
+      - --certificatesresolvers.letsencrypt.acme.httpchallenge.entrypoint=web
+      - --certificatesresolvers.letsencrypt.acme.email=admin@haykinsodoo.docker
+      - --certificatesresolvers.letsencrypt.acme.storage=/letsencrypt/acme.json
+    ports:
+      - "80:80"
+      - "443:443"
+      - "8080:8080"  # Traefik dashboard port
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./traefik/traefik.yml:/traefik.yml
+      - ./traefik/acme.json:/letsencrypt/acme.json
+
+volumes:
+  db-data:
+  odoo-data:
+
+secrets:
+  postgresql_password:
+    file: odoo_pg_pass
